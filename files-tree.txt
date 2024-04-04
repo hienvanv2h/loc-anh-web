@@ -1,0 +1,63 @@
+﻿Folder PATH listing for volume Windows
+Volume serial number is 08B6-ED28
+C:.
+│   db.sqlite3
+│   files-tree.txt
+│   manage.py
+│   requirements.txt
+│   
+├───imgproc_app
+│   │   asgi.py
+│   │   settings.py
+│   │   urls.py
+│   │   wsgi.py
+│   │   __init__.py
+│   │   
+│   └───__pycache__
+│           *.pyc
+│           __init__.cpython-312.pyc
+│           
+├───media
+│   └───images
+│           ...
+│           
+├───static
+│       base.js
+│       style.css
+│       
+├───templates
+│       base.html
+│       
+└───uploads
+    │   admin.py
+    │   apps.py
+    │   forms.py
+    │   models.py
+    │   tests.py
+    │   urls.py
+    │   utils.py
+    │   views.py
+    │   __init__.py
+    │   
+    ├───migrations
+    │   │   *.py
+    │   │   __init__.py
+    │   │   
+    │   └───__pycache__
+    │           *.pyc
+    │           __init__.cpython-312.pyc
+    │           
+    ├───static
+    │   └───uploads
+    │           detail.js
+    │           main.js
+    │           
+    ├───templates
+    │   └───uploads
+    │           detail.html
+    │           main.html
+    │           
+    └───__pycache__
+            *.pyc
+            __init__.cpython-312.pyc
+            
