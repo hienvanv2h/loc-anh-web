@@ -5,13 +5,12 @@ import cv2
 # Ideal filters
 def ideal_lp(D0, M, N):
   H = np.zeros((M, N), dtype=np.float32)
-  for u in range(M):
-    for v in range(N):
-      D = np.sqrt((u-M/2)**2 + (v-N/2)**2)
-      if D <= D0:
-        H[u,v] = 1
-      else:
-        H[u,v] = 0
+  center_row, center_col = int(M / 2), int(N / 2)
+  u = np.arange(M)
+  v = np.arange(N)
+  U, V = np.meshgrid(u, v, indexing='ij')
+  D = np.sqrt((U - center_row)**2 + (V - center_col)**2)
+  H = np.where(D <= D0, 1, 0)
   return H
 
 def ideal_hp(D0, M, N):
