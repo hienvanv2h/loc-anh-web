@@ -9,8 +9,8 @@ def ideal_lp(D0, M, N):
   u = np.arange(M)
   v = np.arange(N)
   U, V = np.meshgrid(u, v, indexing='ij')
-  D = np.sqrt((U - center_row)**2 + (V - center_col)**2)
-  H = np.where(D <= D0, 1, 0)
+  D2 = (U - center_row)**2 + (V - center_col)**2   #D^2
+  H = np.where(D2 <= float(D0)**2, 1, 0)
   return H
 
 def ideal_hp(D0, M, N):
@@ -19,10 +19,13 @@ def ideal_hp(D0, M, N):
 # Gaussian filters
 def gaussian_lp(D0, M, N):
   H = np.zeros((M, N), dtype=np.float32)
-  for u in range(M):
-    for v in range(N):
-      D = np.sqrt((u-M/2)**2 + (v-N/2)**2)
-      H[u,v] = np.exp(-D**2/float(2*D0*D0))
+  center_row, center_col = int(M / 2), int(N / 2)
+  u = np.arange(M)
+  v = np.arange(N)
+  U, V = np.meshgrid(u, v, indexing='ij')
+  D2 = (U - center_row)**2 + (V - center_col)**2  #D^2
+  D02 = float(D0)**2
+  H = np.exp(-D2/(2*D02))
 
   return H
 
@@ -32,10 +35,13 @@ def gaussian_hp(D0, M, N):
 # Butterworth filters
 def butterworth_lp(D0, M, N, n=2):
   H = np.zeros((M, N), dtype=np.float32)
-  for u in range(M):
-    for v in range(N):
-      D = np.sqrt((u-M/2)**2 + (v-N/2)**2)
-      H[u,v] = 1 / (1 + (D/float(D0))**(2*n))
+  center_row, center_col = int(M / 2), int(N / 2)
+  u = np.arange(M)
+  v = np.arange(N)
+  U, V = np.meshgrid(u, v, indexing='ij')
+  D2 = (U - center_row)**2 + (V - center_col)**2  #D^2
+  D02 = float(D0)**2
+  H = 1 / (1 + (D2/D02)**n)
 
   return H
 
@@ -73,9 +79,9 @@ def get_filtered_image(image: Image.Image, action, cutoff_val):
 
   G = F_shift * H
   # Inverse DFT
-  G_shift = np.fft.ifftshift(G.real)
-  G_real = np.asarray(G_shift, dtype=np.float32)
-  g_zp = np.fft.ifft2(G_real)
+  G_shift = np.fft.ifftshift(G)
+  G_shift = np.asarray(G_shift, dtype=np.float32)
+  g_zp = np.fft.ifft2(G_shift)
   # Post-processing
   g = g_zp[:shape[0],:shape[1]]
   g = np.abs(g)  # Take the absolute value to ensure non-negative pixel values
