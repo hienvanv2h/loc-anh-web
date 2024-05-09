@@ -49,16 +49,19 @@ const getInternationalizedTime = (dateTimeString) => {
   return formatter.format(dateTime);
 };
 
-const handleAlert = (type, message) => {
+const handleAlert = (type, message, executionTime = null) => {
+  const executionTimeReport = executionTime
+    ? `<p>Thời gian thực thi: ${executionTime} giây</p>`
+    : "";
   if (alertBox) {
     alertBox.innerHTML = `
       <div class="alert alert-${type}" role="alert">
-        ${message}
+        ${message} ${executionTimeReport}
       </div>
     `;
-    setTimeout(() => {
-      alertBox.innerHTML = "";
-    }, 5000);
+    // setTimeout(() => {
+    //   alertBox.innerHTML = "";
+    // }, 5000);
   } else {
     console.log("alertBox is undefined!");
   }

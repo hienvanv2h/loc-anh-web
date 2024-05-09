@@ -1,8 +1,9 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.files.base import ContentFile
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
+from django.shortcuts import get_object_or_404
 
 from decimal import Decimal
 from PIL import Image
@@ -10,6 +11,7 @@ from io import BytesIO
 from .utils import get_filtered_image
 import os
 import uuid
+import time
 
 
 FILTER_CHOICES = (
@@ -26,12 +28,17 @@ def custom_image_path(instance, filename):
   # Lấy phần mở rộng của tệp
   extension = os.path.splitext(filename)[1]
   # Tạo tên tệp mới bằng cách kết hợp ID của đối tượng và phần mở rộng
-  pk = instance.pk if instance.pk is not None else uuid.uuid4()
-  new_filename = f'image_{pk}{extension}'
+  original_filename = filename.split('/')[-1]
+  if instance.pk:
+    new_filename = f"{original_filename.split('.')[0]}_{instance.pk}{extension}"
+  else:
+    new_filename = f"{original_filename.split('.')[0]}_{uuid.uuid4()}{extension}"
+
   return os.path.join('images', new_filename)
 
 class Upload(models.Model):
   image = models.ImageField(upload_to=custom_image_path)
+  size = models.CharField(max_length=20, default="")
   action = models.CharField(max_length=50, choices=FILTER_CHOICES)
   cutoff_val = models.DecimalField(
     default = Decimal("0.00"),
@@ -62,21 +69,3 @@ class Upload(models.Model):
     self.image.name = self.image.name.split("/")[-1]
     self.image.save(self.image.name, ContentFile(img_png), save=False)
     super().save(*args, **kwargs)
-
-
-# @receiver(post_save, sender=Upload)
-# def delete_old_image(sender, instance, **kwargs):
-#     # Kiểm tra xem đây có phải là lần lưu đầu tiên của đối tượng hay không
-#     if not instance.pk:
-#         return
-
-#     try:
-#         # Lấy đối tượng Upload từ database trước khi lưu
-#         old_upload = Upload.objects.get(pk=instance.pk)
-#     except Upload.DoesNotExist:
-#         return
-
-#     # Kiểm tra xem có thay đổi trong trường image không
-#     if old_upload.image != instance.image:
-#         # Nếu có, xóa ảnh cũ
-#         old_upload.image.delete(save=False)

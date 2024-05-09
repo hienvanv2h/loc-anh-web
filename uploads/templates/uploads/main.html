@@ -18,8 +18,7 @@
   type="button"
   class="btn btn-primary"
   data-bs-toggle="modal"
-  data-bs-target="#imageUploadModal"
->
+  data-bs-target="#imageUploadModal">
   Tải ảnh lên
 </button>
 
@@ -29,8 +28,7 @@
   id="imageUploadModal"
   tabindex="-1"
   aria-labelledby="imageUploadModalLabel"
-  aria-hidden="true"
->
+  aria-hidden="true">
   <div class="modal-dialog" style="max-width: 600px">
     <div class="modal-content">
       <div class="modal-header">
@@ -39,17 +37,15 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+          aria-label="Close"></button>
       </div>
       <form id="imageUploadForm" method="post" enctype="multipart/form-data">
         <div class="modal-body">
           {% csrf_token %}
           <!-- {{ form.as_p }} -->
           <div class="mb-2">
-            <label for="{{ form.image.id_for_label }}" class="btn btn-info me-2"
-              >Chọn tệp ảnh</label
-            >
+            <label for="{{ form.image.id_for_label }}"
+              class="btn btn-info me-2">Chọn tệp ảnh</label>
             {{form.image}}
             <span class="imageName"></span>
           </div>
@@ -57,11 +53,15 @@
           <div id="imagePreview"></div>
 
           <div class="mt-3 gap-2">
-            <div id="valueInput" class="mb-2">
+            <div class="mb-2">
+              <label for="{{ form.size.id_for_label }}">Kích cỡ ảnh: </label>
+              {{ form.size }}
+            </div>
+            <div class="mb-2">
               <label for="{{ form.action.id_for_label }}">Bộ lọc ảnh: </label>
               {{ form.action }}
             </div>
-            <div id="valueInput">
+            <div class="mb-2">
               <label for="{{ form.cutoff_val.id_for_label }}">
                 Giá trị D0:
               </label>
@@ -74,8 +74,7 @@
           <button
             type="button"
             class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+            data-bs-dismiss="modal">
             Đóng
           </button>
           <button type="submit" class="btn btn-primary">Lưu</button>

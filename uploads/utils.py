@@ -50,6 +50,7 @@ def butterworth_hp(D0, M, N, n=2):
 
 # Processing function
 def get_filtered_image(image: Image.Image, action, cutoff_val):
+
   f = np.asarray(image)
   shape = np.shape(f)
   M, N = shape

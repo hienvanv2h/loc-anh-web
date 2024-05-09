@@ -4,10 +4,12 @@
 }
 
 .uploadImage {
-  max-height: 400px;
-  max-width: 600px;
+  /* max-height: 400px; */
+  max-width: 100%;
   object-fit: cover;
   object-position: center;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .uploadLink {

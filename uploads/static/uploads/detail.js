@@ -8,6 +8,7 @@ const imageNameBox = document.querySelector(".imageName");
 
 const modifyUploadModal = document.querySelector("#modifyUploadModal");
 const imageInput = document.querySelector("#id_image");
+const sizeField = document.querySelector("#id_size");
 const filter = document.querySelector("#id_action");
 const cutoffInput = document.querySelector("#id_cutoff_val");
 
@@ -43,6 +44,7 @@ const renderUploadDetail = (data) => {
   imagePreview.innerHTML = `<img src="${data.image_url}" alt="Image Preview">`;
   loadImageInput(); // load image to modal's file input
   imageNameBox.innerHTML = data.image_name;
+  sizeField.value = data.size;
   filter.value = data.action;
   cutoffInput.value = data.cutoff_val;
 
@@ -54,14 +56,20 @@ const renderUploadDetail = (data) => {
       (<a href="${data.image_url}" target="_blank">Xem ảnh</a>)
     </h4>
     <hr />
-    <div class="d-flex gap-4 justify-content-start">    
-      <img src="${data.image_url}" alt="Upload Image" class="uploadImage" />
-      <div>
-        <p><strong>Bộ lọc: </strong>${getActionDisplay(data.action)}</p>
-        <p><strong>Giá trị D0: </strong>${data.cutoff_val}</p>
-        <p><strong>Thời gian tạo: </strong>${createdTime}</p>
-        <p><strong>Cập nhật lần cuối lúc: </strong>${updatedTime}</p>
-      </div>
+    <div class="d-flex gap-4 justify-content-start">
+      <div class="row">
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <img src="${data.image_url}" alt="Upload Image" class="uploadImage" />
+        </div>
+        <div class="col-md-6">        
+          <div>
+            <p><strong>Bộ lọc: </strong>${getActionDisplay(data.action)}</p>
+            <p><strong>Giá trị cắt: </strong>${data.cutoff_val}</p>
+            <p><strong>Thời gian tạo: </strong>${createdTime}</p>
+            <p><strong>Cập nhật lần cuối lúc: </strong>${updatedTime}</p>
+          </div>
+        </div>
+      </div>  
     </div>
   `;
 };
@@ -93,7 +101,14 @@ imageInput.addEventListener("change", (e) => {
     // Render preview
     const reader = new FileReader();
     reader.onload = (event) => {
+      const image = new Image();
       const imageUrl = event.target.result;
+      image.src = imageUrl;
+      image.onload = function () {
+        const width = this.width;
+        const height = this.height;
+        sizeField.value = `${width}x${height}`;
+      };
       imagePreview.innerHTML = `<img src="${imageUrl}" alt="Image Preview">`;
     };
     reader.onerror = (err) => {
@@ -117,8 +132,12 @@ modifyUploadModal.addEventListener("submit", (e) => {
   const formData = new FormData();
   formData.append("csrfmiddlewaretoken", csrftoken);
   formData.append("image", file);
+  formData.append("size", sizeField.value);
   formData.append("action", filter.value);
   formData.append("cutoff_val", cutoffInput.value);
+
+  // Start measure execution time
+  const startTime = performance.now();
   $.ajax({
     type: "POST",
     url: modifyUrl,
@@ -126,11 +145,16 @@ modifyUploadModal.addEventListener("submit", (e) => {
     processData: false,
     contentType: false,
     success: function (response) {
+      // End time
+      const endTime = performance.now();
+      const executionTime = (endTime - startTime) / 1000;
+
       const data = response.data;
+      console.log(data);
       uploadDetailBox.innerHTML = renderUploadDetail(data);
       spinnerBox.classList.add("hidden");
       $("#modifyUploadModal").modal("hide");
-      handleAlert("success", "Thay đổi ảnh thành công!");
+      handleAlert("success", "Thay đổi ảnh thành công!", executionTime);
     },
     error: function (xhr, status, error) {
       console.log(error);
