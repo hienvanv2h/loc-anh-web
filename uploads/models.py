@@ -28,11 +28,12 @@ def custom_image_path(instance, filename):
   # Lấy phần mở rộng của tệp
   extension = os.path.splitext(filename)[1]
   # Tạo tên tệp mới bằng cách kết hợp ID của đối tượng và phần mở rộng
-  original_filename = filename.split('/')[-1]
+  original_filename = filename.split('.')[0]
   if instance.pk:
-    new_filename = f"{original_filename.split('.')[0]}_{instance.pk}{extension}"
+    new_filename = f"{original_filename}_{instance.pk}{extension}"
   else:
-    new_filename = f"{original_filename.split('.')[0]}_{uuid.uuid4()}{extension}"
+    rand_uuid = str(uuid.uuid4()).split("-")[0]
+    new_filename = f"{original_filename}_{rand_uuid}{extension}"
 
   return os.path.join('images', new_filename)
 

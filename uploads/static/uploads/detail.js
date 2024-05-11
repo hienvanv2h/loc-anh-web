@@ -1,5 +1,6 @@
 const backBtn = document.querySelector("#backBtn");
 const deleteBtn = document.querySelector("#deleteBtn");
+const downloadBtn = document.querySelector("#downloadBtn");
 
 const uploadDetailBox = document.querySelector("#uploadDetail");
 const spinnerBox = document.querySelector("#spinner-box");
@@ -40,6 +41,9 @@ const loadImageInput = () => {
 };
 
 const renderUploadDetail = (data) => {
+  // Update href of download button
+  downloadBtn.setAttribute("href", data.image_url);
+
   // Render modify modal inputs
   imagePreview.innerHTML = `<img src="${data.image_url}" alt="Image Preview">`;
   loadImageInput(); // load image to modal's file input

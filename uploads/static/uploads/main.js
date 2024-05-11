@@ -1,7 +1,7 @@
 const uploadsList = document.querySelector("#uploadsList");
 const spinnerBox = document.querySelector("#spinner-box");
 const imagePreview = document.querySelector("#imagePreview");
-const imageName = document.querySelector(".imageName");
+const imageNameBox = document.querySelector(".imageName");
 
 const imageUploadForm = document.querySelector("#imageUploadForm");
 const imageInput = document.querySelector("#id_image");
@@ -69,7 +69,7 @@ const renderUpload = (upload) => {
 
 const clearUploadForm = () => {
   imagePreview.innerHTML = "";
-  imageName.innerHTML = "";
+  imageNameBox.innerHTML = "";
   imageUploadForm.reset();
   sizeField.setAttribute("disabled", "true");
 };
@@ -96,7 +96,7 @@ $.ajax({
 imageInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (file) {
-    imageName.innerHTML = file.name;
+    imageNameBox.innerHTML = file.name;
     // Render preview
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -115,7 +115,7 @@ imageInput.addEventListener("change", (e) => {
     };
     reader.readAsDataURL(file);
   } else {
-    imageName.innerHTML = "";
+    imageNameBox.innerHTML = "";
     imagePreview.innerHTML = "";
   }
 });
